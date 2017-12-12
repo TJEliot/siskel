@@ -23,29 +23,14 @@ var Movies = Backbone.Collection.extend({
   comparator: 'title',
 
   sortByField: function(field) {
-    comparator = field;
-    console.log(comparator);
-    var sorted = this.models.sort(function(a, b) {
-      if (field === 'title') {
-        var numArray = [];
-        console.log('trying to find this.models');
-          console.log(this.collection);
-        for (var i = 0; i < this.models.length; i++) {
-          var thisNum = [];
-          for (var j = 0; j < this.models[i].length; j++) {
-            thisNum.push(this.models[j]);
-          }
-          thisNum = thisNum.join('');
-          thisNum = parseInt(thisNum);
-        }
-      } 
-      // console.log(a.get(comparator));
-      // console.log(b.get(comparator));
-      // console.log(a.get(comparator) - b.get(comparator));
-      return a.get(comparator) - b.get(comparator);
-    });
+    this.comparator = field;
+    this.sort();
+    // console.log(comparator);
+    // var sorted = this.models.sort(function(a, b) {
+    //   return a.get(comparator) - b.get(comparator);
+    // });
   
-    this.collection = sorted;
+    // this.collection = sorted;
     //console.log(this.collection);
   }
 
@@ -59,10 +44,7 @@ var AppView = Backbone.View.extend({
 
   handleClick: function(e) {
     var field = $(e.target).val();
-    console.log(field);
     this.collection.sortByField(field);
-    console.log('we are in AppView and looking at this.collection');
-    console.log(this.collection);
     this.render();
   },
 
@@ -109,7 +91,7 @@ var MovieView = Backbone.View.extend({
 var MoviesView = Backbone.View.extend({
 
   initialize: function() {
-//    this.listenTo(this.collection, 'change', MoviesView.render);
+  //    this.listenTo(this.collection, 'change', MoviesView.render);
     //this.collection.on('sort', this.render, this); 
   },
 
