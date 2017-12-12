@@ -5,9 +5,10 @@ var Movie = Backbone.Model.extend({
   },
 
   toggleLike: function() {
-    // your code here
+    this.set({like: !this.get('like')});
+    console.log(this.get('like'));
+    console.log('you clicked the like button');
   }
-
 });
 
 var Movies = Backbone.Collection.extend({
@@ -16,12 +17,36 @@ var Movies = Backbone.Collection.extend({
 
   initialize: function() {
     // your code here
+    //this.on('change', this.sortByField, this);
   },
 
   comparator: 'title',
 
   sortByField: function(field) {
-    // your code here
+    comparator = field;
+    console.log(comparator);
+    var sorted = this.models.sort(function(a, b) {
+      if (field === 'title') {
+        var numArray = [];
+        console.log('trying to find this.models');
+          console.log(this.collection);
+        for (var i = 0; i < this.models.length; i++) {
+          var thisNum = [];
+          for (var j = 0; j < this.models[i].length; j++) {
+            thisNum.push(this.models[j]);
+          }
+          thisNum = thisNum.join('');
+          thisNum = parseInt(thisNum);
+        }
+      } 
+      // console.log(a.get(comparator));
+      // console.log(b.get(comparator));
+      // console.log(a.get(comparator) - b.get(comparator));
+      return a.get(comparator) - b.get(comparator);
+    });
+  
+    this.collection = sorted;
+    //console.log(this.collection);
   }
 
 });
@@ -34,7 +59,11 @@ var AppView = Backbone.View.extend({
 
   handleClick: function(e) {
     var field = $(e.target).val();
+    console.log(field);
     this.collection.sortByField(field);
+    console.log('we are in AppView and looking at this.collection');
+    console.log(this.collection);
+    this.render();
   },
 
   render: function() {
@@ -62,11 +91,12 @@ var MovieView = Backbone.View.extend({
   },
 
   events: {
-    'click button': 'handleClick'
+    'click button' : 'handleClick'
   },
 
   handleClick: function() {
-    // your code here
+    this.model.toggleLike();
+    this.render();    
   },
 
   render: function() {
@@ -79,14 +109,25 @@ var MovieView = Backbone.View.extend({
 var MoviesView = Backbone.View.extend({
 
   initialize: function() {
-    // your code here
+//    this.listenTo(this.collection, 'change', MoviesView.render);
+    //this.collection.on('sort', this.render, this); 
   },
 
   render: function() {
     this.$el.empty();
+    console.log("we are rendering");
     this.collection.forEach(this.renderMovie, this);
   },
-
+  
+  // events: {
+  //   'change form input': 'render'
+  // },
+  
+  // clickDetector: function() {
+  //   console.log('you clicked on a radio button');
+  //   this.render();
+  // },
+  
   renderMovie: function(movie) {
     var movieView = new MovieView({model: movie});
     this.$el.append(movieView.render());
